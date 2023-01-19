@@ -1,19 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors, fonts } from '../../../utils'
-import { color } from 'react-native-reanimated'
 
-const Item = ({title, qty, code}) => {
+const Menu = ({title, onPress}) => {
   return (
-    <View style={styles.list}>
+    <TouchableOpacity style={styles.list} onPress={onPress}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.title}>{qty}</Text>
-      <Text style={styles.title}>{code}</Text>
-    </View>
+    </TouchableOpacity>
   )
 }
 
-export default Item
+export default Menu
 
 const styles = StyleSheet.create({
   title: {

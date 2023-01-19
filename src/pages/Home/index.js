@@ -3,52 +3,67 @@ import {StyleSheet, Text, View, TouchableOpacity} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Button, Gap } from '../../components';
 import Item from '../../components/molecules/Item';
-import { colors, fonts } from '../../utils';
+import { colors, config, fonts, getData, showError, showSuccess } from '../../utils';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
 import { Alert } from 'react-native/Libraries/Alert/Alert';
 
 const Home = ({navigation}) => {
     const [isScanning, setIsScanning] = useState(false)
-    const [result, setResult] = useState(null)
-    const [item, setItem] = useState([
-        {
-            id: 1,
-            name: "Indomie",
-        },
-        {
-            id: 2,
-            name: "Indomie",
-        },
-        {
-            id: 3,
-            name: "Indomie",
-        },
-        {
-            id: 4,
-            name: "Indomie",
-        },
-    ]);
+    const [item, setItem] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [user, setUser] = useState([]);
 
-    const onSuccess = e => {
-        setResult(e);
+    const _getProductByCode = e => {
         // setIsScanning(false);
-
-        const newItem = {
-            name:e.data,
-            id:5
-        };
-
-        setItem([...item, newItem]);
-
-        // Linking.openURL(e.data).catch(err =>
-        //     console.error('An error occured', err)
-        // );
+        setIsLoading(true);
+        fetch(config.url+'/api/v1/products/code/'+e.data, {
+            method: 'GET',
+            headers: {  
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer '+user.token
+            }
+        })        
+        .then(response => response.json())
+        .then(res => {
+            setIsLoading(false);
+            if(res.meta.code !== 200){
+                showError(res.meta.message)
+            } 
+            else{
+                const index = searchProductIndex(res.data.code)
+                console.log(index)  
+                if(index > -1){
+                    item[index].qty+=1;
+                    console.log(item);
+                }else{
+                    res.data.qty = 1;
+                    setItem([...item, res.data]);
+                }
+                showSuccess(res.meta.message)
+            }  
+        })
+        .catch((error) => {
+            setIsLoading(false);
+            showError(error.message)
+        })
     };
 
+    function searchProductIndex(val){
+        const index = item.findIndex(x => x.code === val);
+        return index;
+    }
+
     useEffect (() => {
-        setResult(null)
+        getDataUserFromLocal();
     }, []);
+
+    const getDataUserFromLocal = () => {
+        getData('user').then(res => {
+            setUser(res);
+        })
+    }
 
     return !isScanning ? (
         <View style={styles.page}>
@@ -61,7 +76,9 @@ const Home = ({navigation}) => {
                             return (
                                 <Item
                                     key={items.id}
-                                    title={items.name}
+                                    title={items.title}
+                                    qty={items.qty}
+                                    code={items.code}
                                 />
                             )
                         })
@@ -70,7 +87,7 @@ const Home = ({navigation}) => {
             </ScrollView>
         </View> ) : (
             <QRCodeScanner
-                onRead={onSuccess}
+                onRead={_getProductByCode}
                 reactivate={true}
                 showMarker={true}
                 reactivateTimeout={1000}
