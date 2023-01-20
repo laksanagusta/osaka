@@ -24,8 +24,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     backgroundColor:colors.white, 
-    flex:1, 
-    paddingHorizontal:16,
+    flex:1,
     paddingTop:24
   },
 })

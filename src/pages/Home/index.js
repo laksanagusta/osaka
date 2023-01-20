@@ -79,6 +79,7 @@ const Home = ({navigation}) => {
                                     title={items.title}
                                     qty={items.qty}
                                     code={items.code}
+                                    price={items.unitPrice}
                                 />
                             )
                         })

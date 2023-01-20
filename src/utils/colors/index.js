@@ -96,6 +96,7 @@ export const colors = {
     },
     cardLights: mainColors.orange,
     border: mainColors.blue02,
+    mainColors: mainColors.blue,
     loadingBackground: mainColors.black2,
     error:mainColors.red1,
     success:mainColors.lightGreen

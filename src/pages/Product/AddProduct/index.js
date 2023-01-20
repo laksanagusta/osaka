@@ -5,8 +5,8 @@ import { Button, Gap, Input } from '../../../components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 
 const AddProduct = () => {
+    const [productCode, setProductCode] = useState('');
     const [form, setForm] = useForm({
-        productId : '',
         title : '',
         price: 0,
         description: ''
@@ -20,7 +20,8 @@ const AddProduct = () => {
     }, []);
 
     const onSuccess = e => {
-        setForm('productId', e.data);
+        setProductCode(e.data)
+        setForm('reset')
         setIsScanning(false)
     };
 
@@ -40,7 +41,7 @@ const AddProduct = () => {
                 'Authorization': 'Bearer '+user.token
             },
             body: JSON.stringify({
-                code:form.productId,
+                code:productCode,
                 title:form.title, 
                 unitPrice:parseInt(form.price),
                 description:form.description
@@ -67,7 +68,7 @@ const AddProduct = () => {
             <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
                 <Button type="secondary" title="Scan" onPress={() => setIsScanning(true)}/>
                 <Gap height={24}/>
-                <Input label='Product ID' value={form.productId} onChangeText={value => setForm('productId', value)} disable/>
+                <Input label='Product ID' value={productCode} onChangeText={value => setProductCode(value)} disable/>
                 <Gap height={24}/>
                 <Input label='Name' value={form.title} onChangeText={value => setForm('title', value)}/>
                 <Gap height={24}/>

@@ -15,14 +15,14 @@ export default Menu
 const styles = StyleSheet.create({
   title: {
     fontSize:16,
-    color:colors.text.primary,
+    color:colors.primary,
     fontFamily: fonts.primary[500]
   },
   list: {
     borderRadius:6,
-    padding:6,
+    padding:10,
     marginBottom:6,
-    borderWidth:1,
+    borderBottomWidth:1,
     borderColor:colors.border
   }
 })
