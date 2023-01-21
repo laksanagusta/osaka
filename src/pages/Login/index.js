@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Button, Gap, Input } from '../../components';
-import { config, storeData, useForm } from '../../utils';
+import { config, showError, storeData, useForm } from '../../utils';
 
 const Login = ({navigation}) => {
     const [form, setForm] = useForm({
@@ -10,7 +10,6 @@ const Login = ({navigation}) => {
     })
 
     const _signIn = () =>  {
-        // dispatch({type:'SET_LOADING', value:true})
         fetch(config.url+'/api/v1/sessions', {
             method: 'POST',
             headers: {  
@@ -21,10 +20,8 @@ const Login = ({navigation}) => {
         })        
         .then(response => response.json())
         .then(res => {
-            // dispatch({type:'SET_LOADING', value:false})
             if(res.meta.code != 200){
-                alert('empty')
-                // showError('Cannot found your credentials');
+                showError(res.meta.message);
             } 
             else{
                 storeData('user', res.data); 
@@ -34,9 +31,6 @@ const Login = ({navigation}) => {
         })
         .catch((error) => {
             console.log(error.message);
-            // alert(error.message)
-            // dispatch({type:'SET_LOADING', value:false})
-            // showError(error.message);
         })
     }
 

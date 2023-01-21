@@ -1,6 +1,6 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Home, Login, Splash, Master, User, AddProduct, EditProduct } from "../pages";
+import { Home, Login, Splash, Master, User, AddProduct, EditProduct, EditItemList } from "../pages";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BottomNavigator } from "../components";
 
@@ -24,6 +24,7 @@ const Router = () => {
         <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
         <Stack.Screen name="AddProduct" component={AddProduct}/>
         <Stack.Screen name="EditProduct" component={EditProduct}/>
+        <Stack.Screen name="EditItemList" component={EditItemList}/>
         <Stack.Screen name="MainApp" component={MainApp} options={{headerShown: false}}/>
     </Stack.Navigator>
   )

@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Button, Gap } from '../../components';
+import { Button, Gap, ListTextReceipt } from '../../components';
 import Item from '../../components/molecules/Item';
 import { colors, config, fonts, getData, showError, showSuccess } from '../../utils';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { RNCamera } from 'react-native-camera';
-import { Alert } from 'react-native/Libraries/Alert/Alert';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../../store/slices/cartSlice';
+import { useSelector } from "react-redux"
 
 const Home = ({navigation}) => {
     const [isScanning, setIsScanning] = useState(false)
-    const [item, setItem] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState([]);
 
+    const {isCartOpen, cartItems, subTotal} = useSelector((state) => state.cart)
+
+    const dispatch = useDispatch();
+
     const _getProductByCode = e => {
-        // setIsScanning(false);
         setIsLoading(true);
         fetch(config.url+'/api/v1/products/code/'+e.data, {
             method: 'GET',
@@ -32,15 +35,7 @@ const Home = ({navigation}) => {
                 showError(res.meta.message)
             } 
             else{
-                const index = searchProductIndex(res.data.code)
-                console.log(index)  
-                if(index > -1){
-                    item[index].qty+=1;
-                    console.log(item);
-                }else{
-                    res.data.qty = 1;
-                    setItem([...item, res.data]);
-                }
+                dispatch(addItem(res.data))
                 showSuccess(res.meta.message)
             }  
         })
@@ -50,14 +45,9 @@ const Home = ({navigation}) => {
         })
     };
 
-    function searchProductIndex(val){
-        const index = item.findIndex(x => x.code === val);
-        return index;
-    }
-
     useEffect (() => {
         getDataUserFromLocal();
-    }, []);
+    }, [cartItems]);
 
     const getDataUserFromLocal = () => {
         getData('user').then(res => {
@@ -72,7 +62,7 @@ const Home = ({navigation}) => {
                 <Gap height={20}/>
                 <View>          
                     {
-                        item.map(items => {
+                        cartItems.map(items => {
                             return (
                                 <Item
                                     key={items.id}
@@ -80,32 +70,31 @@ const Home = ({navigation}) => {
                                     qty={items.qty}
                                     code={items.code}
                                     price={items.unitPrice}
+                                    productId={items.id}
+                                    navigation={navigation}
                                 />
                             )
                         })
                     }
                 </View>
+                <Gap height={30}/>
+                {
+                    cartItems.length > 0 && (
+                        <View>
+                            <ListTextReceipt leftText="Item Count" rightText={cartItems.length}/>
+                            <ListTextReceipt leftText="Grandtotal" rightText={subTotal}/>
+                        </View>
+                    )
+                }
             </ScrollView>
         </View> ) : (
             <QRCodeScanner
                 onRead={_getProductByCode}
                 reactivate={true}
                 showMarker={true}
-                reactivateTimeout={1000}
-                // flashMode={RNCamera.Constants.FlashMode.torch}
-                // topContent={
-                //     <Text style={styles.centerText}>
-                //         Go to{' '}
-                //         <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
-                //         your computer and scan the QR code.
-                //     </Text>
-                // }
+                reactivateTimeout={2000}
                 bottomContent={
                     <>
-                        {/* <TouchableOpacity style={styles.buttonTouchable} onPress={() => scanner.current.reactivate}>
-                            <Text style={styles.buttonText}>OK. Got it!</Text>
-                        </TouchableOpacity> */}
-                        {/* <Button title="Stop" onPress={() => setIsScanning(false)}/> */}
                         <TouchableOpacity style={styles.buttonTouchable} onPress={() => setIsScanning(false)}>
                             <Text style={styles.buttonText}>Stop</Text>
                         </TouchableOpacity>
@@ -118,6 +107,9 @@ const Home = ({navigation}) => {
 export default Home
 
 const styles = StyleSheet.create({
+    subTotal : {
+        color: colors.text.primary
+    },
     scroll: {
         backgroundColor:colors.white, 
         flex:1, 

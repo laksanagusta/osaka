@@ -1,19 +1,35 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors, fonts } from '../../../utils'
-import { color } from 'react-native-reanimated'
+import { useDispatch } from 'react-redux';
+import { decrementItem, incrementItem } from '../../../store/slices/cartSlice';
 
-const Item = ({title, qty, code, price}) => {
+const Item = ({title, qty, code, price, productId}) => {
+  const dispatch = useDispatch()
+
+  const handleDecrement = () => {
+    dispatch(decrementItem(productId))
+  }
+
+  const handleIncrement = () => {
+    dispatch(incrementItem(productId))
+  }
+
   return (
     <View style={styles.list}>
       <View style={styles.contentLeft}>
         <Text style={styles.code}>ID {code}</Text>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.price}>IDR {price}</Text>
-        <Text style={styles.qty}>qty : {qty}</Text>
       </View>
       <View style={styles.contentRight}>
-        <Text style={styles.edit}>Edit</Text>
+        <TouchableOpacity style={styles.actionButton} onPress={handleDecrement}>
+          <Text style={styles.actionButtonText}>-</Text>
+        </TouchableOpacity>
+        <Text style={styles.qty}>{qty}</Text>
+        <TouchableOpacity style={styles.actionButton} onPress={handleIncrement}>
+          <Text style={styles.actionButtonText}>+</Text>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -33,9 +49,9 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary[700]
   },
   qty: {
-    fontSize:12,
+    fontSize:16,
     color:colors.text.secondary,
-    fontFamily: fonts.primary[500]
+    fontFamily: fonts.primary[700]
   },
   price: {
     fontSize:12,
@@ -55,5 +71,27 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  contentRight:{
+    flexDirection:'row'
+  },
+  actionButton: {
+    fontSize:16,
+    color:colors.text.secondary,
+    fontFamily: fonts.primary[700],
+    width:20,
+    heiht:20,
+    marginHorizontal:14,
+    borderColor:colors.border,
+    backgroundColor:colors.button.secondary.background,
+    borderWidth:1,
+    borderRadius:4,
+    justifyContent:"center",
+    alignItems:"center"
+  },
+  actionButtonText: {
+    fontSize:16,
+    color:colors.mainColors,
+    fontFamily: fonts.primary[700]
   }
 })
