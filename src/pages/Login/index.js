@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Gap, Input } from '../../components';
 import { config, showError, storeData, useForm } from '../../utils';
 
@@ -9,8 +9,12 @@ const Login = ({navigation}) => {
         password : '',
     })
 
-    const _signIn = () =>  {
-        fetch(config.url+'/api/v1/sessions', {
+    const [isLoading, setIsLoading] = useState(false)
+
+    const _signIn = async () =>  {
+        setIsLoading(true);
+
+        await fetch(config.url+'/api/v1/sessions', {
             method: 'POST',
             headers: {  
                 'Content-Type': 'application/json',
@@ -32,6 +36,8 @@ const Login = ({navigation}) => {
         .catch((error) => {
             console.log(error.message);
         })
+
+        setIsLoading(false)
     }
 
     return (
@@ -43,7 +49,7 @@ const Login = ({navigation}) => {
                     <Gap height={24}/>
                     <Input label='Password' value={form.password} onChangeText={value => setForm('password', value)} secureTextEntry/>
                     <Gap height={40}/>
-                    <Button title="Sign In" type="primary" onPress={_signIn}/>
+                    <Button title="Sign In" type="primary" onPress={_signIn} disabled={isLoading}/>
                 </View>
             </View>
         </View>

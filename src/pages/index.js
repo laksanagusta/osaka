@@ -6,5 +6,7 @@ import Master from "./Master";
 import AddProduct from "./Product/AddProduct";
 import EditProduct from "./Product/EditProduct";
 import EditItemList from "./Home/EditItemList";
+import Order from "./Order";
+import OrderDetail from "./Order/OrderDetail";
 
-export {Splash, Login, Home, User, Master, AddProduct, EditProduct, EditItemList};
+export {Splash, Login, Home, User, Master, AddProduct, EditProduct, EditItemList, Order, OrderDetail};

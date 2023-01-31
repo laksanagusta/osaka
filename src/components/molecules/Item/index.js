@@ -4,7 +4,7 @@ import { colors, fonts } from '../../../utils'
 import { useDispatch } from 'react-redux';
 import { decrementItem, incrementItem } from '../../../store/slices/cartSlice';
 
-const Item = ({title, qty, code, price, productId}) => {
+const Item = ({title, qty, code, price, productId, showActions}) => {
   const dispatch = useDispatch()
 
   const handleDecrement = () => {
@@ -23,13 +23,25 @@ const Item = ({title, qty, code, price, productId}) => {
         <Text style={styles.price}>IDR {price}</Text>
       </View>
       <View style={styles.contentRight}>
-        <TouchableOpacity style={styles.actionButton} onPress={handleDecrement}>
-          <Text style={styles.actionButtonText}>-</Text>
-        </TouchableOpacity>
+        {
+          showActions ? (
+            <TouchableOpacity style={styles.actionButton} onPress={handleDecrement}>
+              <Text style={styles.actionButtonText}>-</Text>
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )
+        }
         <Text style={styles.qty}>{qty}</Text>
-        <TouchableOpacity style={styles.actionButton} onPress={handleIncrement}>
-          <Text style={styles.actionButtonText}>+</Text>
-        </TouchableOpacity>
+        {
+          showActions ? (
+            <TouchableOpacity style={styles.actionButton} onPress={handleIncrement}>
+              <Text style={styles.actionButtonText}>+</Text>
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )
+        }
       </View>
     </View>
   )

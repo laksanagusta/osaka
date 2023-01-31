@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Button, Gap, ListTextReceipt } from '../../components';
-import Item from '../../components/molecules/Item';
+import { Button, Gap, ListTextReceipt, Item } from '../../components';
+// import Item from '../../components/molecules/Item';
 import { colors, config, fonts, getData, showError, showSuccess } from '../../utils';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../../store/slices/cartSlice';
 import { useSelector } from "react-redux"
+import { orderServices } from '../../_services/order';
+import { productServices } from '../../_services/product';
 
 const Home = ({navigation}) => {
     const [isScanning, setIsScanning] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState([]);
 
-    const {isCartOpen, cartItems, subTotal} = useSelector((state) => state.cart)
+    const {basket, subTotal} = useSelector((state) => state.cart)
+
+    const orderServ     = new orderServices();
+    const productServ   = new productServices();
 
     const dispatch = useDispatch();
 
@@ -45,9 +50,29 @@ const Home = ({navigation}) => {
         })
     };
 
+    const _placeOrder = async () => {
+        setIsLoading(true);
+
+        const reqBody = JSON.stringify({
+            order: {
+                status: "done",
+                grandTotal: subTotal,
+                customerName: "",
+                userId: user.id
+            },
+            basket
+        })
+
+        const newOrder = await orderServ.saveOrder(reqBody, user);
+
+        setIsLoading(false);
+
+        navigation.navigate('OrderDetail', newOrder)
+    }
+
     useEffect (() => {
         getDataUserFromLocal();
-    }, [cartItems]);
+    }, []);
 
     const getDataUserFromLocal = () => {
         getData('user').then(res => {
@@ -62,7 +87,7 @@ const Home = ({navigation}) => {
                 <Gap height={20}/>
                 <View>          
                     {
-                        cartItems.map(items => {
+                        basket.map(items => {
                             return (
                                 <Item
                                     key={items.id}
@@ -79,10 +104,12 @@ const Home = ({navigation}) => {
                 </View>
                 <Gap height={30}/>
                 {
-                    cartItems.length > 0 && (
+                    basket.length > 0 && (
                         <View>
-                            <ListTextReceipt leftText="Item Count" rightText={cartItems.length}/>
+                            <ListTextReceipt leftText="Item Count" rightText={basket.length}/>
                             <ListTextReceipt leftText="Grandtotal" rightText={subTotal}/>
+                            <Gap height={20}/>
+                            <Button type="primary" title="Place Order" onPress={_placeOrder} disabled={isLoading}/>
                         </View>
                     )
                 }

@@ -13,6 +13,10 @@ const TabItem = ({title, active, onPress, onLongPress}) => {
         {
             return active ? <IconInvPrimary/> : <IconInvSecondary/>
         }
+        if(title === "Order")
+        {
+            return active ? <IconInvPrimary/> : <IconInvSecondary/>
+        }
         if(title === "User")
         {
             return active ? <IconUserPrimary/> : <IconUserSecondary/>

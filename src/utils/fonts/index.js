@@ -1,10 +1,10 @@
 export const fonts = {
     primary: {
-        300:'OpenSans-Light',
-        400:'OpenSans-Medium',
-        600:'OpenSans-Regular',
-        700:'OpenSans-SemiBold',
-        800:'OpenSans-ExtraBold',
-        normal:'OpenSans-Medium'
+        300:'Montserrat-Light',
+        400:'Montserrat-Medium',
+        600:'Montserrat-Regular',
+        700:'Montserrat-SemiBold',
+        800:'Montserrat-ExtraBold',
+        normal:'Montserrat-Medium'
     }
 }

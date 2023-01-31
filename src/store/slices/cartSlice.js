@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     isCartOpen: false,
-    cartItems: [],
+    basket: [],
     subTotal: 0
 };
 
@@ -11,45 +11,53 @@ const initialState = {
 const cartSlice = createSlice({
     name: 'cart',
     initialState,
+    middleware: getDefaultMiddleware => getDefaultMiddleware({
+        serializableCheck: false
+    }),
     reducers: {
         toggleCart(state, action) {
             state.isCartOpen = action.payload;
         },
         addItem(state, action) {
             const newItemId = action.payload.id;
-            const existingItem = state.cartItems.find(item => item.id === newItemId);
+            const existingItem = state.basket.find(item => item.id === newItemId);
 
             if (existingItem) {
                 existingItem.qty++;
+                existingItem.subTotal = action.payload.unitPrice * existingItem.qty; 
             } else {
+                action.payload.productId = action.payload.id;
                 action.payload.qty = 1;
-                state.cartItems.push(action.payload);
+                action.payload.subTotal = action.payload.unitPrice;
+                state.basket.push(action.payload);
             }
 
-            state.subTotal = recalculateSubTotal(state.cartItems);
+            state.subTotal = recalculateSubTotal(state.basket);
         },
         removeItem(state, action) {
-            state.cartItems = state.cartItems.filter(item => item.id !== action.payload);
+            state.basket = state.basket.filter(item => item.id !== action.payload);
         },
         incrementItem(state, action) {
-            state.cartItems = state.cartItems.map(item => {
+            state.basket = state.basket.map(item => {
                 if (item.id === action.payload) {
                     item.qty++;
+                    item.subTotal = item.qty * item.unitPrice;
                 }
                 return item;
             });
 
-            state.subTotal = recalculateSubTotal(state.cartItems)
+            state.subTotal = recalculateSubTotal(state.basket)
         },
         decrementItem(state, action) {
-            state.cartItems = state.cartItems.map(item => {
+            state.basket = state.basket.map(item => {
                 if (item.id === action.payload) {
                     item.qty--;
+                    item.subTotal = item.qty * item.unitPrice;
                 }
                 return item;
             }).filter(item => item.qty !== 0);
 
-            state.subTotal = recalculateSubTotal(state.cartItems)
+            state.subTotal = recalculateSubTotal(state.basket)
         }
     }
 });
