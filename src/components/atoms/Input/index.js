@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput } from 'react-native'
 import React, {useState} from 'react'
-import { colors } from '../../../utils'
+import { colors, fonts } from '../../../utils'
 
 const Input = ({label, value, onChangeText, secureTextEntry, disable, placeholder, keyboardType}) => {
   const [border, setBorder] = useState(colors.border)
@@ -45,16 +45,15 @@ export default Input
 
 const styles = StyleSheet.create({
     input: border => ({
-        padding:12,
-        borderWidth:1,
+        borderBottomWidth:1,
         borderColor: border,
-        borderRadius: 10,
-        color:colors.text.primary
+        color:colors.text.primary,
+        fontFamily: fonts.primary[400]
     }),
     label: {
         fontSize: 14,
         color: colors.text.primary,
         marginBottom: 6,
-        fontFamily: 'OpenSans-Regular'
+        fontFamily: fonts.primary[400]
     }
 })

@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import { IconHomePrimary, IconHomeSecondary, IconInvPrimary, IconInvSecondary, IconUserPrimary, IconUserSecondary } from '../../../assets'
+import { IconHomePrimary, IconHomeSecondary, IconInvPrimary, IconInvSecondary, IconTransactionPrimary, IconTransactionSecondary, IconUserPrimary, IconUserSecondary } from '../../../assets'
 import { colors, fonts } from '../../../utils'
 
 const TabItem = ({title, active, onPress, onLongPress}) => {
@@ -15,7 +15,7 @@ const TabItem = ({title, active, onPress, onLongPress}) => {
         }
         if(title === "Order")
         {
-            return active ? <IconInvPrimary/> : <IconInvSecondary/>
+            return active ? <IconTransactionPrimary/> : <IconTransactionSecondary/>
         }
         if(title === "User")
         {

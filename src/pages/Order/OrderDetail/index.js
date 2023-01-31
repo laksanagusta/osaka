@@ -42,7 +42,7 @@ const OrderDetail = ({navigation, route}) => {
                                   key={items.id}
                                   title={items.product.title}
                                   qty={items.qty}
-                                  code={items.code}
+                                  code={items.product.code}
                                   price={items.unitPrice}
                                   productId={items.product.id}
                                   navigation={navigation}
@@ -56,6 +56,7 @@ const OrderDetail = ({navigation, route}) => {
               {
                 basketAndOrder.length > 0 && (
                   <View>
+                      <ListTextReceipt leftText="Order Number" rightText={basketAndOrder[0].order.orderNumber}/>
                       <ListTextReceipt leftText="Item Count" rightText={basketAndOrder.length}/>
                       <ListTextReceipt leftText="Grandtotal" rightText={basketAndOrder[0].order.grandTotal}/>
                   </View>

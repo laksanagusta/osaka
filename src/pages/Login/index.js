@@ -60,7 +60,7 @@ export default Login;
 
 const styles = StyleSheet.create({
     content : {
-        paddingHorizontal:28,
+        paddingHorizontal:10,
     },
     text : {
         alignItems:'center'

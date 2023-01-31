@@ -14,7 +14,7 @@ export default AlertMessage
 
 const styles = StyleSheet.create({
     text: (type) => ({
-        fontFamily:fonts.primary[500],
+        fontFamily:fonts.primary[600],
         color:colors.white
     }), 
     content: (type) => ({

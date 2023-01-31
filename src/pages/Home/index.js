@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react'
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Button, Gap, ListTextReceipt, Item } from '../../components';
-// import Item from '../../components/molecules/Item';
 import { colors, config, fonts, getData, showError, showSuccess } from '../../utils';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../../store/slices/cartSlice';
 import { useSelector } from "react-redux"
 import { orderServices } from '../../_services/order';
-import { productServices } from '../../_services/product';
+import { dataHelper } from '../../_helper/data';
 
 const Home = ({navigation}) => {
     const [isScanning, setIsScanning] = useState(false)
@@ -19,7 +18,7 @@ const Home = ({navigation}) => {
     const {basket, subTotal} = useSelector((state) => state.cart)
 
     const orderServ     = new orderServices();
-    const productServ   = new productServices();
+    const dataHelpers    = new dataHelper();
 
     const dispatch = useDispatch();
 
@@ -58,7 +57,8 @@ const Home = ({navigation}) => {
                 status: "done",
                 grandTotal: subTotal,
                 customerName: "",
-                userId: user.id
+                userId: user.id,
+                orderNumber: dataHelpers.randomizeString(8)
             },
             basket
         })
@@ -83,7 +83,7 @@ const Home = ({navigation}) => {
     return !isScanning ? (
         <View style={styles.page}>
             <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
-                <Button type="primary" title="Scan" onPress={() => setIsScanning(true)}/>
+                <Button type="primary" title="SCAN" onPress={() => setIsScanning(true)}/>
                 <Gap height={20}/>
                 <View>          
                     {
@@ -97,6 +97,7 @@ const Home = ({navigation}) => {
                                     price={items.unitPrice}
                                     productId={items.id}
                                     navigation={navigation}
+                                    showActions={true}
                                 />
                             )
                         })
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     scroll: {
         backgroundColor:colors.white, 
         flex:1, 
-        paddingHorizontal:16,
+        paddingHorizontal:10,
         paddingTop:24
     },
     page : {

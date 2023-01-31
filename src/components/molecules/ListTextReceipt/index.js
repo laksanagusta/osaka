@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize:16,
     color:colors.text.primary,
-    fontFamily: fonts.primary[700]
+    fontFamily: fonts.primary[600]
   },
   list: {
     paddingHorizontal:12,

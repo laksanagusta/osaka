@@ -3,6 +3,7 @@ import React from 'react'
 import { colors, fonts } from '../../../utils'
 import { useDispatch } from 'react-redux';
 import { decrementItem, incrementItem } from '../../../store/slices/cartSlice';
+import { Gap } from '../../atoms';
 
 const Item = ({title, qty, code, price, productId, showActions}) => {
   const dispatch = useDispatch()
@@ -19,7 +20,9 @@ const Item = ({title, qty, code, price, productId, showActions}) => {
     <View style={styles.list}>
       <View style={styles.contentLeft}>
         <Text style={styles.code}>ID {code}</Text>
+        <Gap height={8}/>
         <Text style={styles.title}>{title}</Text>
+        <Gap height={8}/>
         <Text style={styles.price}>IDR {price}</Text>
       </View>
       <View style={styles.contentRight}>
@@ -71,7 +74,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary[500]
   },
   code: {
-    fontSize:10,
+    fontSize:12,
     color:colors.text.secondary,
     fontFamily: fonts.primary[400]
   },
@@ -85,7 +88,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   contentRight:{
-    flexDirection:'row'
+    flexDirection:'row',
+    marginRight:-14
   },
   actionButton: {
     fontSize:16,

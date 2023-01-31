@@ -16,6 +16,7 @@ const Order = ({navigation}) => {
     const getOrders = async () => {
         setIsLoading(true);
         let ordersResponse = await orderServ.getOrders(user)
+        console.log(ordersResponse)
         setOrders(ordersResponse)
         setIsLoading(false);
     };
@@ -42,7 +43,13 @@ const Order = ({navigation}) => {
                         {
                             orders.map(items => {
                                 return (
-                                    <ItemOrders key={items.id}/>
+                                    <ItemOrders 
+                                        key={items.id}
+                                        orderNumber={items.orderNumber}
+                                        grandTotal={items.grandTotal}
+                                        createdAt={items.created_at}
+                                        onPress={() => navigation.navigate("OrderDetail", items)}
+                                    />
                                 )
                             })
                         }

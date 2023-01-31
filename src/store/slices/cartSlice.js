@@ -12,7 +12,8 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState,
     middleware: getDefaultMiddleware => getDefaultMiddleware({
-        serializableCheck: false
+        serializableCheck: false,
+        immutableCheck: false
     }),
     reducers: {
         toggleCart(state, action) {
