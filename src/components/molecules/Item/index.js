@@ -4,6 +4,7 @@ import { colors, fonts } from '../../../utils'
 import { useDispatch } from 'react-redux';
 import { decrementItem, incrementItem } from '../../../store/slices/cartSlice';
 import { Gap } from '../../atoms';
+import { dataHelper } from '../../../_helper/data';
 
 const Item = ({title, qty, code, price, productId, showActions}) => {
   const dispatch = useDispatch()
@@ -16,6 +17,8 @@ const Item = ({title, qty, code, price, productId, showActions}) => {
     dispatch(incrementItem(productId))
   }
 
+  const helper = new dataHelper();
+
   return (
     <View style={styles.list}>
       <View style={styles.contentLeft}>
@@ -23,7 +26,7 @@ const Item = ({title, qty, code, price, productId, showActions}) => {
         <Gap height={8}/>
         <Text style={styles.title}>{title}</Text>
         <Gap height={8}/>
-        <Text style={styles.price}>IDR {price}</Text>
+        <Text style={styles.price}>IDR {helper.formatNumber(price)}</Text>
       </View>
       <View style={styles.contentRight}>
         {

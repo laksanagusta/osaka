@@ -2,13 +2,15 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { colors, fonts } from '../../../utils'
 import { Gap } from '../../atoms'
+import { dataHelper } from '../../../_helper/data'
 
 const ItemOrders = ({orderNumber, grandTotal, createdAt, onPress}) => {
+  const helper = new dataHelper()
   return (
     <View style={styles.content}>
       <Text style={styles.title}>{orderNumber}</Text>
       <Gap height={8}/>
-      <Text style={styles.grandTotal}>IDR {grandTotal}</Text>
+      <Text style={styles.grandTotal}>IDR {helper.formatNumber(grandTotal)}</Text>
       <Gap height={8}/>
       <Text style={styles.subTitle}>{createdAt}</Text>
       <Gap height={10}/>

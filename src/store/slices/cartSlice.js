@@ -59,6 +59,9 @@ const cartSlice = createSlice({
             }).filter(item => item.qty !== 0);
 
             state.subTotal = recalculateSubTotal(state.basket)
+        },
+        clearItem(state, action) {
+            state.basket = []
         }
     }
 });
@@ -73,5 +76,5 @@ function recalculateSubTotal(items){
 }
 
 
-export const { toggleCart, addItem, removeItem, incrementItem, decrementItem } = cartSlice.actions;
+export const { toggleCart, addItem, removeItem, incrementItem, decrementItem, clearItem } = cartSlice.actions;
 export default cartSlice.reducer;

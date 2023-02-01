@@ -1,15 +1,15 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors, config, fonts, getData, showError, showSuccess, useForm } from '../../../utils'
-import { Button, Gap, Input } from '../../../components'
+import { Button, Gap, Header, Input } from '../../../components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 
-const AddProduct = () => {
+const AddProduct = ({navigation}) => {
     const [productCode, setProductCode] = useState('');
     const [form, setForm] = useForm({
-        title : '',
-        price: 0,
-        description: ''
+        title : null,
+        price: null,
+        description: null
     });
     const [user, setUser] = useState([]);
     const [isScanning, setIsScanning] = useState(false);
@@ -44,7 +44,7 @@ const AddProduct = () => {
                 code:productCode,
                 title:form.title, 
                 unitPrice:parseInt(form.price),
-                description:form.description
+                description:"form.description"
             }),
         })        
         .then(response => response.json())
@@ -65,6 +65,7 @@ const AddProduct = () => {
 
     return !isScanning ?  (
         <View style={styles.page}>
+            <Header title="Create Product" onPress={() => navigation.goBack()}/>
             <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
                 <Button type="secondary" title="Scan" onPress={() => setIsScanning(true)}/>
                 <Gap height={24}/>

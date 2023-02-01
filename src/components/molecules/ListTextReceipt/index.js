@@ -1,8 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors, fonts } from '../../../utils'
+import { dataHelper } from '../../../_helper/data'
 
 const ListTextReceipt = ({leftText, rightText}) => {
+
+  const helper = new dataHelper()
 
   return (
     <View style={styles.list}>
@@ -10,7 +13,7 @@ const ListTextReceipt = ({leftText, rightText}) => {
         <Text style={styles.text}>{leftText}</Text>
       </View>
       <View style={styles.contentRight}>
-        <Text style={styles.text}>{rightText}</Text>
+        <Text style={styles.text}>{isNaN(rightText) ? rightText : helper.formatNumber(rightText)}</Text>
       </View>
     </View>
   )

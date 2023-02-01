@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {StyleSheet, Text, View} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { ItemOrders } from '../../components';
+import { Gap, ItemOrders } from '../../components';
 import { colors, config, fonts, getData, showError, showSuccess } from '../../utils';
 import { orderServices } from '../../_services/order';
 
@@ -16,7 +16,6 @@ const Order = ({navigation}) => {
     const getOrders = async () => {
         setIsLoading(true);
         let ordersResponse = await orderServ.getOrders(user)
-        console.log(ordersResponse)
         setOrders(ordersResponse)
         setIsLoading(false);
     };
@@ -54,6 +53,7 @@ const Order = ({navigation}) => {
                             })
                         }
                     </View>
+                    <Gap height={24}/>
                 </ScrollView>
             </View> ) : <View>
                 <Text>Not found orders</Text>
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
     scroll: {
         backgroundColor:colors.white, 
         flex:1, 
-        paddingHorizontal:16,
-        paddingTop:24
+        paddingHorizontal:10,
+        paddingTop:20
     },
     page : {
         backgroundColor:colors.tabBar, flex:1

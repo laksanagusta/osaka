@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Button, Gap, ListTextReceipt, Item } from '../../../components';
+import { Button, Gap, ListTextReceipt, Item, Header } from '../../../components';
 import { colors, fonts, getData } from '../../../utils';
 import { orderServices } from '../../../_services/order';
 
@@ -33,6 +33,7 @@ const OrderDetail = ({navigation, route}) => {
 
     return (
       <View style={styles.page}>
+        <Header title="Order Detail" onPress={() => navigation.goBack()}/>
           <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
               <View>          
                   {
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     scroll: {
         backgroundColor:colors.white, 
         flex:1, 
-        paddingHorizontal:16,
+        paddingHorizontal:10,
         paddingTop:24
     },
     page : {

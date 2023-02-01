@@ -1,41 +1,32 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { Button, Gap, Input } from '../../components';
-import { config, showError, storeData, useForm } from '../../utils';
+import { storeData, useForm } from '../../utils';
+import { userServices } from '../../_services/user';
 
 const Login = ({navigation}) => {
     const [form, setForm] = useForm({
-        email : '',
-        password : '',
+        email : null,
+        password : null,
     })
 
     const [isLoading, setIsLoading] = useState(false)
 
+    const userSvc = new userServices();
+
     const _signIn = async () =>  {
         setIsLoading(true);
 
-        await fetch(config.url+'/api/v1/sessions', {
-            method: 'POST',
-            headers: {  
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({email:form.email, password:form.password}),
-        })        
-        .then(response => response.json())
-        .then(res => {
-            if(res.meta.code != 200){
-                showError(res.meta.message);
-            } 
-            else{
-                storeData('user', res.data); 
-                storeData('isLogin', true)
-                navigation.replace('MainApp');
-            }  
+        const reqBody = JSON.stringify({
+            email:form.email, 
+            password:form.password
         })
-        .catch((error) => {
-            console.log(error.message);
-        })
+
+        const signInRes = await userSvc.signIn(reqBody)
+
+        storeData('user', signInRes.data); 
+        storeData('isLogin', true)
+        navigation.replace('MainApp');
 
         setIsLoading(false)
     }

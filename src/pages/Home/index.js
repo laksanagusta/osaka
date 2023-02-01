@@ -5,10 +5,11 @@ import { Button, Gap, ListTextReceipt, Item } from '../../components';
 import { colors, config, fonts, getData, showError, showSuccess } from '../../utils';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { useDispatch } from 'react-redux';
-import { addItem } from '../../store/slices/cartSlice';
+import { addItem, clearItem } from '../../store/slices/cartSlice';
 import { useSelector } from "react-redux"
 import { orderServices } from '../../_services/order';
 import { dataHelper } from '../../_helper/data';
+import { productServices } from '../../_services/product';
 
 const Home = ({navigation}) => {
     const [isScanning, setIsScanning] = useState(false)
@@ -18,35 +19,16 @@ const Home = ({navigation}) => {
     const {basket, subTotal} = useSelector((state) => state.cart)
 
     const orderServ     = new orderServices();
-    const dataHelpers    = new dataHelper();
+    const productServ   = new productServices()
+    const dataHelpers   = new dataHelper();
 
     const dispatch = useDispatch();
 
-    const _getProductByCode = e => {
+    const _getProductByCode = async (e) => {
         setIsLoading(true);
-        fetch(config.url+'/api/v1/products/code/'+e.data, {
-            method: 'GET',
-            headers: {  
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer '+user.token
-            }
-        })        
-        .then(response => response.json())
-        .then(res => {
-            setIsLoading(false);
-            if(res.meta.code !== 200){
-                showError(res.meta.message)
-            } 
-            else{
-                dispatch(addItem(res.data))
-                showSuccess(res.meta.message)
-            }  
-        })
-        .catch((error) => {
-            setIsLoading(false);
-            showError(error.message)
-        })
+        const response = await productServ.getProductByCode(e.data, user)
+        dispatch(addItem(response))
+        setIsLoading(false)
     };
 
     const _placeOrder = async () => {
@@ -58,12 +40,14 @@ const Home = ({navigation}) => {
                 grandTotal: subTotal,
                 customerName: "",
                 userId: user.id,
-                orderNumber: dataHelpers.randomizeString(8)
+                orderNumber: dataHelpers.randomizeString(8).toUpperCase()
             },
             basket
         })
 
         const newOrder = await orderServ.saveOrder(reqBody, user);
+
+        dispatch(clearItem());
 
         setIsLoading(false);
 
@@ -85,7 +69,7 @@ const Home = ({navigation}) => {
             <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
                 <Button type="primary" title="SCAN" onPress={() => setIsScanning(true)}/>
                 <Gap height={20}/>
-                <View>          
+                <View>        
                     {
                         basket.map(items => {
                             return (
@@ -105,14 +89,19 @@ const Home = ({navigation}) => {
                 </View>
                 <Gap height={30}/>
                 {
-                    basket.length > 0 && (
+                    basket.length > 0 ? (
                         <View>
                             <ListTextReceipt leftText="Item Count" rightText={basket.length}/>
                             <ListTextReceipt leftText="Grandtotal" rightText={subTotal}/>
                             <Gap height={20}/>
                             <Button type="primary" title="Place Order" onPress={_placeOrder} disabled={isLoading}/>
                         </View>
-                    )
+                    ) : (
+                        <View>
+                            <Gap height={200}/>
+                            <Text style={styles.title}>Item is Empty, scan to start transaction.</Text> 
+                        </View>
+                    ) 
                 }
             </ScrollView>
         </View> ) : (
@@ -152,8 +141,10 @@ const styles = StyleSheet.create({
         padding:28
     },
     title : {
-        fontSize:24, 
-        fontFamily:fonts.primary[600], color:colors.white
+        fontSize:14,
+        textAlign:'center',
+        fontFamily:fonts.primary[600], 
+        color:colors.text.secondary
     }, 
     desc : {
         fontSize:14,

@@ -16,6 +16,7 @@ export class productServices {
                 showError(res.meta.message)
             } 
             else{
+                showSuccess(res.meta.message)
                 const data = res.data
                 return data;
             }  
@@ -38,7 +39,7 @@ export class productServices {
         .then(response => response.json())
         .then(res => {
             if(res.meta.code !== 200){
-                showError(res.meta.message)
+                showError(res.data.message)
             } 
             else{
                 showSuccess(res.meta.message)

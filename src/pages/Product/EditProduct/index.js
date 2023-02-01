@@ -1,16 +1,16 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors, config, fonts, getData, showError, showSuccess, useForm } from '../../../utils'
-import { Button, Gap, Input } from '../../../components'
+import { Button, Gap, Header, Input } from '../../../components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { productServices } from '../../../_services/product'
 
-const EditProduct = () => {
+const EditProduct = ({navigation}) => {
     const [productId, setProductId] = useState(null);
-    const [productCode, setProductCode] = useState('');
-    const [title, setTitle] = useState('');
-    const [price, setPrice] = useState('');
-    const [description, setDescription] = useState('');
+    const [productCode, setProductCode] = useState(null);
+    const [title, setTitle] = useState(null);
+    const [price, setPrice] = useState(null);
+    const [description, setDescription] = useState(null);
 
     const [user, setUser] = useState([]);
     const [isScanning, setIsScanning] = useState(false);
@@ -49,7 +49,7 @@ const EditProduct = () => {
             code:productCode,
             title:title, 
             unitPrice:parseInt(price),
-            description:description
+            description:"description"
         }
 
         await productServ.saveProduct(JSON.stringify(reqBody), user, productId)
@@ -59,6 +59,7 @@ const EditProduct = () => {
 
     return !isScanning ?  (
         <View style={styles.page}>
+            <Header title="Update Product" onPress={() => navigation.goBack()}/>
             <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
                 <Button type="secondary" title="Scan" onPress={() => setIsScanning(true)}/>
                 <Gap height={24}/>

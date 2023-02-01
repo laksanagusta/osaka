@@ -23,10 +23,10 @@ const Router = () => {
     <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}}/>
         <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
-        <Stack.Screen name="AddProduct" component={AddProduct}/>
-        <Stack.Screen name="EditProduct" component={EditProduct}/>
-        <Stack.Screen name="EditItemList" component={EditItemList}/>
-        <Stack.Screen name="OrderDetail" component={OrderDetail}/>
+        <Stack.Screen name="AddProduct" component={AddProduct} options={{headerShown: false}}/>
+        <Stack.Screen name="EditProduct" component={EditProduct} options={{headerShown: false}}/>
+        <Stack.Screen name="EditItemList" component={EditItemList} options={{headerShown: false}}/>
+        <Stack.Screen name="OrderDetail" component={OrderDetail} options={{headerShown: false}}/>
         <Stack.Screen name="MainApp" component={MainApp} options={{headerShown: false}}/>
     </Stack.Navigator>
   )

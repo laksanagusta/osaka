@@ -8,7 +8,7 @@ const Master = ({navigation}) => {
   return (
     <View style={styles.page}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
-        <Menu title="Add Product" onPress={() => navigation.navigate("AddProduct")}/>
+        <Menu icon="green" title="Add Product" onPress={() => navigation.navigate("AddProduct")}/>
         <Menu title="Edit Product" onPress={() => navigation.navigate("EditProduct")}/>
       </ScrollView>
     </View>
@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   scroll: {
     backgroundColor:colors.white, 
     flex:1,
-    paddingTop:24
+    paddingTop:24,
+    paddingHorizontal:10
   },
 })
