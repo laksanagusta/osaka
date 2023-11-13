@@ -1,9 +1,27 @@
 import { config, showError, showSuccess } from "../utils";
 
-export class productServices {
-    getProductByCode(code, user){
-        return fetch(config.url+'/api/v1/products/code/'+code, {
+export class cartServices {
+    getActiveCart(user){
+        return fetch(config.url+'/api/v1/carts/active', {
             method: 'GET',
+            headers: {  
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer '+user.token
+            }
+        })        
+        .then(response => response.json())
+        .then(res => {
+                return res
+        })
+        .catch((error) => {
+            showError(error.message)
+        })
+    }
+
+    createEmptyCart(user){
+        return fetch(config.url+'/api/v1/carts', {
+            method: 'POST',
             headers: {  
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -16,9 +34,7 @@ export class productServices {
                 showError(res.meta.message)
             } 
             else{
-                showSuccess(res.meta.message)
-                const data = res.data
-                return data;
+                return res
             }  
         })
         .catch((error) => {
@@ -26,38 +42,50 @@ export class productServices {
         })
     }
 
-    saveProduct(reqBody, user, productId){
-        fetch(config.url+'/api/v1/products/'+productId, {
+    addToCart(product, cartId, user){
+        return fetch(config.url+'/api/v1/cart-items', {
+            method: 'POST',
+            headers: {  
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer '+user.token
+            },
+            body: JSON.stringify({
+                qty: 1,
+                unitPrice: product.unitPrice,
+                note: "test",
+                cartId: cartId,
+                productId: product.id,
+                attributeItem:[]
+            })
+        })        
+        .then(response => response.json())
+        .then(res => {
+            if(res.meta.code !== 200){
+                showError(res.meta.message)
+            } 
+            else{
+                return res
+            }  
+        })
+        .catch((error) => {
+            showError(error.message)
+        })
+    }
+
+    updateCartItem(qty, cartItemId, user){
+        return fetch(config.url+'/api/v1/cart-items/' + cartItemId, {
             method: 'PUT',
             headers: {  
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'Authorization': 'Bearer '+user.token
             },
-            body: reqBody,
-        })        
-        .then(response => response.json())
-        .then(res => {
-            if(res.meta.code !== 200){
-                showError(res.data.message)
-            } 
-            else{
-                showSuccess(res.meta.message)
-            }  
-        })
-        .catch((error) => {
-            showError(error.message)
-        })
-    }
-
-    getProducts(user){
-        return fetch(config.url+'/api/v1/products?limit=8&page=1', {
-            method: 'GET',
-            headers: {  
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVudGlzQGdtYWlsLmNvbSIsInVzZXJfaWQiOjF9.nRk_vimVr98VmmyEvcj_O99Aj2dUA7CVbDZ_2wFBRGE'
-            }
+            body: JSON.stringify({
+                qty: qty,
+                note: "em",
+                attributeItem:[]
+            })
         })        
         .then(response => response.json())
         .then(res => {
@@ -65,9 +93,7 @@ export class productServices {
                 showError(res.meta.message)
             } 
             else{
-                showSuccess(res.meta.message)
-                const data = res.data
-                return data;
+                return res.data
             }  
         })
         .catch((error) => {

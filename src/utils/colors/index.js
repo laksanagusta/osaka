@@ -4,6 +4,7 @@ const { Colors } = require("react-native/Libraries/NewAppScreen");
 
 const mainColors = {
     green1:'#04583C',
+    green2:'#3ECB7F',
     dark1: '#5B6274',
     dark2: '#C1C2CC',
     dark3: '#8092AF',
@@ -31,7 +32,7 @@ const mainColors = {
     grey02:'#969696',
     black01:'#1E1E1E',
 
-    blue:'#095DE0',
+    blue:'#19B5FE',
     blue02:'#EAEEFD'
 
 }
@@ -66,7 +67,7 @@ export const colors = {
     },
     button: {
         primary: {
-            background: mainColors.blue,
+            background: mainColors.green2,
             text: 'white',
         },
         secondary: {
@@ -94,10 +95,12 @@ export const colors = {
             text:mainColors.grey4
         }
     },
+    background: "#EDEEEE",
     cardLights: mainColors.orange,
     border: mainColors.blue02,
     mainColors: mainColors.blue,
     loadingBackground: mainColors.black2,
     error:mainColors.red1,
-    success:mainColors.lightGreen
+    success:mainColors.lightGreen,
+    grren: mainColors.green2
 }

@@ -2,7 +2,7 @@ import { config, showError, showSuccess } from "../utils";
 
 export class userServices {
     signIn(reqBody){
-        return fetch(config.url+'/api/v1/sessions', {
+        return fetch(config.url+'/api/v1/users/login', {
             method: 'POST',
             headers: {  
                 'Content-Type': 'application/json',

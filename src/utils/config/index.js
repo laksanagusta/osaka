@@ -1,3 +1,3 @@
 export const config = {
-    url: "https://osaka-backend-production.up.railway.app"
+    url: "http://192.168.1.69:8000"
 }

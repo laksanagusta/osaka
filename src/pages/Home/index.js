@@ -1,100 +1,142 @@
 import React, { useEffect, useState } from 'react'
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
-import { Button, Gap, ListTextReceipt, Item } from '../../components';
+import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler'
+import { Button, Gap, ListTextReceipt, Item, Input, ScanInput, FloatActionButton } from '../../components';
 import { colors, config, fonts, getData, showError, showSuccess } from '../../utils';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { useDispatch } from 'react-redux';
-import { addItem, clearItem } from '../../store/slices/cartSlice';
+import { addItem, clearItem, setIsLoading, setBasket } from '../../store/slices/cartSlice';
 import { useSelector } from "react-redux"
-import { orderServices } from '../../_services/order';
-import { dataHelper } from '../../_helper/data';
 import { productServices } from '../../_services/product';
+import { cartServices } from '../../_services/cart';
+import _ from 'lodash';
+import { Skeleton } from '@rneui/themed';
 
 const Home = ({navigation}) => {
     const [isScanning, setIsScanning] = useState(false)
-    const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState([]);
+    const [code, setCode] = useState("")
 
-    const {basket, subTotal} = useSelector((state) => state.cart)
+    const {basket, subTotal, isLoading} = useSelector((state) => state.cart)
 
-    const orderServ     = new orderServices();
     const productServ   = new productServices()
-    const dataHelpers   = new dataHelper();
+    const cartServ      = new cartServices()
 
     const dispatch = useDispatch();
 
-    const _getProductByCode = async (e) => {
-        setIsLoading(true);
-        const response = await productServ.getProductByCode(e.data, user)
-        dispatch(addItem(response))
-        setIsLoading(false)
+    const _addToCart = async (e) => {
+        dispatch(setIsLoading(true))
+        const userData = await getUserDataFromLocal()
+        if (userData) {
+            try {
+                const activeCart = await cartServ.getActiveCart(userData)
+                if (activeCart.meta.code == 422){
+                    const newEmptyCart = await cartServ.createEmptyCart(userData)
+                    const product = await productServ.getProductByCode(e.data, userData)
+        
+                    const buildAddItem = {
+                        product : product,
+                        cartId : newEmptyCart.id,
+                        user : userData
+                    }
+    
+                    cart = await cartServ.addToCart(buildAddItem)
+                    dispatch(setBasket(cart))
+    
+                    return
+                }
+
+                const product = await productServ.getProductByCode(e.data, userData)
+
+                const buildAddItem = {
+                    product : product,
+                    cartId : activeCart.data.id,
+                    user : userData
+                }
+    
+                cart = await cartServ.addToCart(buildAddItem)
+                dispatch(setBasket(cart))
+        
+                dispatch(setIsLoading(false))
+        
+                return
+            } catch (error) {
+                dispatch(setIsLoading(false))
+                showError(error.message)
+            }
+        }
     };
 
-    const _placeOrder = async () => {
-        setIsLoading(true);
-
-        const reqBody = JSON.stringify({
-            order: {
-                status: "done",
-                grandTotal: subTotal,
-                customerName: "",
-                userId: user.id,
-                orderNumber: dataHelpers.randomizeString(8).toUpperCase()
-            },
-            basket
-        })
-
-        const newOrder = await orderServ.saveOrder(reqBody, user);
-
-        dispatch(clearItem());
-
-        setIsLoading(false);
-
-        navigation.navigate('OrderDetail', newOrder)
-    }
-
     useEffect (() => {
-        getDataUserFromLocal();
+        _getCart()
     }, []);
 
-    const getDataUserFromLocal = () => {
-        getData('user').then(res => {
-            setUser(res);
-        })
+    const getUserDataFromLocal = async () => {
+        try {
+          const userData = await getData('user'); // Replace 'userData' with your specific key
+          if (userData) {
+            setUser(userData)
+            return userData
+          }
+          return null;
+        } catch (error) {
+          console.error('Error reading user data from local storage:', error);
+          return null;
+        }
+    };
+
+    const _getCart = async () => {
+        dispatch(setIsLoading(true))
+        const userData = await getUserDataFromLocal()
+        if (userData) {
+            try {
+                const activeCart = await cartServ.getActiveCart(userData)
+                dispatch(setBasket(activeCart.data))
+                dispatch(setIsLoading(false))
+            } catch (error) {
+                console.error('API request error:', error);
+                dispatch(setIsLoading(false))
+            }
+        }
     }
 
     return !isScanning ? (
-        <View style={styles.page}>
+        <GestureHandlerRootView style={styles.page}>
+            <FloatActionButton onPress={() => setIsScanning(true)}/>
             <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
-                <Button type="primary" title="SCAN" onPress={() => setIsScanning(true)}/>
                 <Gap height={20}/>
                 <View>        
-                    {
-                        basket.map(items => {
+                    {    
+                        basket?.cartItems?.map((items, index) => {
                             return (
                                 <Item
+                                    index={index}
                                     key={items.id}
-                                    title={items.title}
+                                    title={items.product.title}
                                     qty={items.qty}
-                                    code={items.code}
+                                    code={items.product.serialNumber}
                                     price={items.unitPrice}
                                     productId={items.id}
                                     navigation={navigation}
                                     showActions={true}
+                                    isLoading={isLoading}
+                                    itemId={items.id}
+                                    user={user}
+                                    url={items.product.images.length > 0 ? items.product.images[0].url : ""}
                                 />
                             )
                         })
                     }
                 </View>
-                <Gap height={30}/>
+                <Gap height={26}/>
                 {
-                    basket.length > 0 ? (
-                        <View>
-                            <ListTextReceipt leftText="Item Count" rightText={basket.length}/>
-                            <ListTextReceipt leftText="Grandtotal" rightText={subTotal}/>
+                    basket?.cartItems?.length > 0 ? (
+                        <View style={styles.totalCard}>
+                            <ListTextReceipt leftText="Item Count" rightText={basket.TotalItem} isLoading={isLoading}/>
+                            <Gap height={6}/>
+                            <ListTextReceipt leftText="Grandtotal" rightText={basket.baseAmount} isLoading={isLoading}/>
                             <Gap height={20}/>
-                            <Button type="primary" title="Place Order" onPress={_placeOrder} disabled={isLoading}/>
+                            <Button type={ !isLoading ? "primary" : "secondary"} title="place order" disabled={isLoading}/>
                         </View>
                     ) : (
                         <View>
@@ -104,9 +146,9 @@ const Home = ({navigation}) => {
                     ) 
                 }
             </ScrollView>
-        </View> ) : (
+        </GestureHandlerRootView> ) : (
             <QRCodeScanner
-                onRead={_getProductByCode}
+                onRead={_addToCart}
                 reactivate={true}
                 showMarker={true}
                 reactivateTimeout={2000}
@@ -124,14 +166,21 @@ const Home = ({navigation}) => {
 export default Home
 
 const styles = StyleSheet.create({
+    totalCard: {
+        backgroundColor: colors.white,
+        padding: 12,
+    },
+    scanComponent : {
+        flexDirection: "row",
+        flex: 1
+    },
     subTotal : {
         color: colors.text.primary
     },
     scroll: {
-        backgroundColor:colors.white, 
+        backgroundColor:colors.background, 
         flex:1, 
-        paddingHorizontal:10,
-        paddingTop:24
+        paddingVertical:10,
     },
     page : {
         backgroundColor:colors.tabBar, flex:1

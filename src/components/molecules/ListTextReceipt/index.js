@@ -2,8 +2,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors, fonts } from '../../../utils'
 import { dataHelper } from '../../../_helper/data'
+import { Skeleton } from '@rneui/base'
 
-const ListTextReceipt = ({leftText, rightText}) => {
+const ListTextReceipt = ({leftText, rightText, isLoading}) => {
 
   const helper = new dataHelper()
 
@@ -12,9 +13,20 @@ const ListTextReceipt = ({leftText, rightText}) => {
       <View style={styles.contentLeft}>
         <Text style={styles.text}>{leftText}</Text>
       </View>
-      <View style={styles.contentRight}>
-        <Text style={styles.text}>{isNaN(rightText) ? rightText : helper.formatNumber(rightText)}</Text>
-      </View>
+
+      {
+        isLoading ? (
+          <Skeleton
+            animation="wave"
+            width={80}
+            height={20}
+          />
+        ) : (
+          <View style={styles.contentRight}>
+            <Text style={styles.text}>{isNaN(rightText) ? rightText : helper.formatNumber(rightText)}</Text>
+          </View>
+        )
+      }
     </View>
   )
 }
@@ -23,13 +35,11 @@ export default ListTextReceipt
 
 const styles = StyleSheet.create({
   text: {
-    fontSize:16,
+    fontSize:14,
     color:colors.text.primary,
     fontFamily: fonts.primary[600]
   },
   list: {
-    paddingHorizontal:12,
-    marginBottom:12,
     flexDirection:'row',
     justifyContent: 'space-between',
     alignItems: 'center'

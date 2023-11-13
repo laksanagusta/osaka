@@ -5,5 +5,8 @@ import AlertMessage from "./AlertMessage";
 import ListTextReceipt from "./ListTextReceipt";
 import ItemOrders from "./ItemOrders";
 import Header from "./Header";
+import ScanInput from "./ScanInput";
+import SearchProduct from "./SearchProduct";
+import CardProduct from "./CardProduct";
 
-export {Item, BottomNavigator, Menu, AlertMessage, ListTextReceipt, ItemOrders, Header}
+export {CardProduct, Item, BottomNavigator, Menu, AlertMessage, ListTextReceipt, ItemOrders, Header, ScanInput, SearchProduct}

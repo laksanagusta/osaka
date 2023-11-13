@@ -5,18 +5,21 @@ import Router from './router'
 import FlashMessage from 'react-native-flash-message'
 import { Provider } from 'react-redux'
 import store from './store/store';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 LogBox.ignoreAllLogs();
 
 export default function App() {
   return (
     <>
-      <Provider store={store}>
-        <NavigationContainer>
-          <Router/>
-        </NavigationContainer>
-        <FlashMessage position="bottom"/>
-      </Provider>
+      <SafeAreaProvider>
+        <Provider store={store}>
+          <NavigationContainer>
+            <Router/>
+          </NavigationContainer>
+          <FlashMessage position="bottom"/>
+        </Provider>
+      </SafeAreaProvider>
     </>
   )
 }

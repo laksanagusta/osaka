@@ -10,6 +10,7 @@ import IconBackButton from './ic-back-button'
 import IconOptionBlue from './ic-option-blue'
 import IconOptionGreen from './ic-option-green'
 import IconOptionPurple from './ic-option-purple'
+import IconSearch from './ic-search'
 
 export {
     IconHomePrimary, 
@@ -23,5 +24,6 @@ export {
     IconBackButton,
     IconOptionBlue,
     IconOptionGreen,
-    IconOptionPurple
+    IconOptionPurple,
+    IconSearch
 }

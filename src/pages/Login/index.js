@@ -22,13 +22,20 @@ const Login = ({navigation}) => {
             password:form.password
         })
 
-        const signInRes = await userSvc.signIn(reqBody)
+        try {
+            const signInRes = await userSvc.signIn(reqBody)
 
-        storeData('user', signInRes.data); 
-        storeData('isLogin', true)
-        navigation.replace('MainApp');
+            storeData('user', signInRes.data); 
+            storeData('isLogin', true)
+            navigation.replace('MainApp');
+    
+            setIsLoading(false)
+            
+        } catch (error) {
+            setIsLoading(false)
+        }
 
-        setIsLoading(false)
+
     }
 
     return (

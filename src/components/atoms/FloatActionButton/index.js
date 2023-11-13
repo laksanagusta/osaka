@@ -3,20 +3,28 @@ import React from 'react'
 import { colors } from '../../../utils/colors';
 import { fonts } from '../../../utils';
 
-const Button = ({title, type, onPress, disabled}) => {
+const FloatActionButton = ({title, type, onPress, disabled}) => {
   return (
       <TouchableOpacity style={styles.container(type)} onPress={onPress} disabled={disabled}>
-        <Text style={styles.text(type)}>{title}</Text>
+
       </TouchableOpacity>
   )
 }
 
-export default Button;
+export default FloatActionButton;
 
 const styles = StyleSheet.create({
     container: (type) => ({
         backgroundColor: type === 'secondary' ? colors.button.secondary.background : colors.button.primary.background,
-        paddingVertical: 12
+        paddingVertical: 12,
+        width:50,
+        height:50,
+        position: 'absolute',
+        bottom: 20,
+        right: 10,
+        padding: 10,
+        borderRadius: 30,
+        zIndex: 1,
     }),
     text: (type) => ({
         fontSize:16,
